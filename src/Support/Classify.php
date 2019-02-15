@@ -50,7 +50,7 @@ class Classify
     public function field($name, $value, $options = [])
     {
         $value = Dumper::export($value);
-        $before = Arr::get($options, 'before', '');
+        $before = Arr::get($options, 'before', "\n");
         $visibility = Arr::get($options, 'visibility', 'protected');
         $after = Arr::get($options, 'after', "\n");
 

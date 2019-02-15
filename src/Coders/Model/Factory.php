@@ -411,7 +411,7 @@ class Factory
 //        }
 
         if ($model->hasCustomPrimaryKey()) {
-            $body .= $this->class->field('primaryKey', $model->getPrimaryKey(), ['before' => "\n"]);
+            $body .= $this->class->field('primaryKey', $model->getPrimaryKey());
         }
 
         if ($model->doesNotAutoincrement()) {
