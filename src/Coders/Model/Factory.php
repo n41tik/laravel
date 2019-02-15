@@ -406,12 +406,12 @@ class Factory
         }
 
         // When table is not plural, append the table name
-        if ($model->needsTableName()) {
+//        if ($model->needsTableName()) {
             $body .= $this->class->field('table', $model->getTableForQuery());
-        }
+//        }
 
         if ($model->hasCustomPrimaryKey()) {
-            $body .= $this->class->field('primaryKey', $model->getPrimaryKey());
+            $body .= $this->class->field('primaryKey', $model->getPrimaryKey(), ['before' => "\n"]);
         }
 
         if ($model->doesNotAutoincrement()) {
@@ -454,12 +454,28 @@ class Factory
             $body .= $this->class->field('hints', $model->getHints(), ['before' => "\n"]);
         }
 
+//        Naitik was here
         foreach ($model->getMutations() as $mutation) {
-            $body .= $this->class->method($mutation->name(), $mutation->body(), ['before' => "\n"]);
+//            $body .= $this->class->method($mutation->name(), $mutation->body(), ['before' => "\n"]);
+
+            $body .= $this->class->method(str_replace(config('database.connections.mysql.prefix'), '', $mutation->name()), $mutation->body(), ['before' => "\n"]);
         }
 
+        $counter = [];
+        $relationNames = [];
+//        Naitik was here
         foreach ($model->getRelations() as $constraint) {
-            $body .= $this->class->method($constraint->name(), $constraint->body(), ['before' => "\n"]);
+//            $body .= $this->class->method($constraint->name(), $constraint->body(), ['before' => "\n"]);
+            $name = $constraint->name();
+            if (isset($relationNames[$name])) {
+                $counter[$name] = $counter[$name] + 1;
+                $newName = $name . '_' . $counter[$name];
+                $body .= $this->class->method(str_replace(config('database.connections.mysql.prefix'), '', $newName), $constraint->body(), ['before' => "\n"]);
+            } else {
+                $counter[$name] = 0;
+                $relationNames[$name] = '';
+                $body .= $this->class->method(str_replace(config('database.connections.mysql.prefix'), '', $name), $constraint->body(), ['before' => "\n"]);
+            }
         }
 
         // Make sure there not undesired line breaks

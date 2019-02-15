@@ -229,17 +229,33 @@ class Model
             return;
         }
 
+        $counter = [];
+
         foreach ($this->blueprint->relations() as $relation) {
             $model = $this->makeRelationModel($relation);
             $belongsTo = new BelongsTo($relation, $this, $model);
-            $this->relations[$belongsTo->name()] = $belongsTo;
+            if (isset($this->relations[$belongsTo->name()])) {
+                $counter[$belongsTo->name()] = $counter[$belongsTo->name()] + 1;;
+                $this->relations[$belongsTo->name() . '_' . $counter[$belongsTo->name()]] = $belongsTo;
+            } else {
+                $counter[$belongsTo->name()] = 0;
+                $this->relations[$belongsTo->name()] = $belongsTo;
+            }
         }
+
+        $counter2 = [];
 
         foreach ($this->factory->referencing($this) as $related) {
             $factory = new ReferenceFactory($related, $this);
             $references = $factory->make();
             foreach ($references as $reference) {
-                $this->relations[$reference->name()] = $reference;
+                if (isset($this->relations[$reference->name()])) {
+                    $counter2[$reference->name()] = $counter2[$reference->name()] + 1;
+                    $this->relations[$reference->name() . '_' . $counter2[$reference->name()]] = $reference;
+                } else {
+                    $counter2[$reference->name()] = 0;
+                    $this->relations[$reference->name()] = $reference;
+                }
             }
         }
     }
