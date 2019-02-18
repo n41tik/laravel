@@ -1119,17 +1119,23 @@ class Model
             throw new \RuntimeException('Config field [guarded] must be an array of attributes to protect from mass assignment.');
         }
 
-        $protected = [
-            $this->getCreatedAtField(),
-            $this->getUpdatedAtField(),
-            $this->getDeletedAtField(),
-        ];
+//        $protected = [
+//            $this->getCreatedAtField(),
+//            $this->getUpdatedAtField(),
+//            $this->getDeletedAtField(),
+//        ];
+//
+//        if ($this->primaryKeys->columns) {
+//            $protected = array_merge($protected, $this->primaryKeys->columns);
+//        }
+//
+//        foreach (array_merge($guarded, $protected) as $pattern) {
+//            if (Str::is($pattern, $column)) {
+//                return false;
+//            }
+//        }
 
-        if ($this->primaryKeys->columns) {
-            $protected = array_merge($protected, $this->primaryKeys->columns);
-        }
-
-        foreach (array_merge($guarded, $protected) as $pattern) {
+        foreach ($guarded as $pattern) {
             if (Str::is($pattern, $column)) {
                 return false;
             }
