@@ -368,6 +368,7 @@ class Model
             case 'collection':
                 return '\Illuminate\Support\Collection';
             case 'date':
+            case 'time':
                 return '\Carbon\Carbon';
             case 'binary':
                 return 'string';
