@@ -280,6 +280,9 @@ class Model
         if ($cast == 'date') {
             $this->dates[] = $propertyName;
         }
+        elseif ($cast == 'time'){
+            $this->dates[] = $propertyName . ':H:i:s';
+        }
         // Track attribute casts
         elseif ($cast != 'string') {
             $this->casts[$propertyName] = $cast;
